@@ -4,11 +4,23 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
+var mongoose=require('mongoose')
 var index = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
+
+//db setup
+mongoose.connect('mongodb://localhost/piratedb');
+
+//define the schema
+let translateSchema=new mongoose.Schema({
+    phrase:String,
+    translation:String
+});
+
+//create a model
+let PirateTrans=mongoose.model('priatetranslations',translateSchema);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -32,6 +44,29 @@ app.get('/shout', (req, res) => {
     let input=req.query.text;
     //res.send('input: "' + input + '"');
 res.json({ result : input.toUpperCase()});
+});
+
+//the translate endpoint
+app.get('/translate', (req, res) => {
+    let text=req.query.text;
+//PirateTrans.findOne({phrase:input},(err,rec) => {
+ PirateTrans.find({ },(err,all_records) => {
+  if (err){
+    console.log(err);
+    res.json({result:null});
+  }
+  else if(all_records == []){
+    res.json({result :null});
+}
+else{
+    console.log(all_records);
+    all_records.forEach((rec) => {
+    text = text.replace(new RegExp(rec.phrase,'g'),rec.translation);
+    });
+    //res.json( rec );
+    res.json({result: text});
+}
+ });
 });
 
 // catch 404 and forward to error handler

@@ -20,8 +20,8 @@ $ sudo chown codebind /data/db
 $ cd
 $ pwd
 /Users/codebind
-# if .bash_profile is not present follow the step 
-# to create it otherwise skip the step below.
+if .bash_profile is not present follow the step 
+to create it otherwise skip the step below.
 $ touch .bash_profile
 $ open .bash_profile
 
